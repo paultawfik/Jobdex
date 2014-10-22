@@ -6,9 +6,9 @@ import unittest
 import sys
 import models
 
-class TestUsers(unittest.TestCase):
+class TestUser(unittest.TestCase):
     """
-    Unit tests for the User class
+    Unit tests for the User class (part of UserApp)
     """
     users = models.User()
 
@@ -231,6 +231,81 @@ class TestUsers(unittest.TestCase):
         self.assertEqual(models.SUCCESS, self.users.sign_up("paulina", "myPassword", "myPassword", "paulina@gmail.com"))
         self.assertEqual(models.SUCCESS, self.users.login("paulina", "myPassword"))
         self.assertEqual(models.SUCCESS, self.users.logout())
+
+###############################################################################################################
+
+class TestCard(unittest.TestCase):
+    """
+    Unit tests for the Card class (part of CardApp)
+    """
+    cards = models.Card()
+
+    ####################
+    ##                ##
+    ##  USER SIGN UP  ##
+    ##                ##
+    ####################
+
+    def testCreateCard(self):
+        """
+        Tests that a card can be created.
+        """
+        self.assertEqual(models.SUCCESS, self.users.create_card("Amazon", "Software Engineer", 2))
+
+    def testCreateCardLongCompanyName(self):
+        """
+        Tests that creating a card with a company name that exceeds 128 characters fails.
+        """
+        long_name = "LongCompanyName"*10
+        self.assertEqual(models.FAILURE, self.users.create_card(long_name, "Software Engineer", 2))
+
+    def testCreateCardEmptyCompanyName(self):
+        """
+        Tests that creating a card with an empty company name fails.
+        """
+        self.assertEqual(models.FAILURE, self.users.create_card("", "Software Engineer", 2))
+
+    def testCreateCardNoneCompanyName(self):
+        """
+        Tests that creating a card with a None company name fails.
+        """
+        self.assertEqual(models.FAILURE, self.users.create_card(None, "Software Engineer", 2))
+
+    def testCreateCardLongJobTitle(self):
+        """
+        Tests that creating a card with a job title that exceeds 128 characters fails.
+        """
+        long_title = "LongJobTitle"*10
+        self.assertEqual(models.FAILURE, self.users.create_card("Accenture", long_title, 2))
+
+    def testCreateCardEmptyJobTitle(self):
+        """
+        Tests that creating a card with an empty job title fails.
+        """
+        self.assertEqual(models.FAILURE, self.users.create_card("AirPR", "", 2))
+
+    def testCreateCardNoneJobTitle(self):
+        """
+        Tests that creating a card with a None job title fails.
+        """
+        self.assertEqual(models.FAILURE, self.users.create_card("Affirm", None, 2))
+
+    def testCreateCardInvalidStatus(self):
+        """
+        Tests that creating a card with a status that is not 0, 1, or 2 fails.
+        """
+        self.assertEqual(models.FAILURE, self.users.create_card("BrightRoll", "Software Engineer", 3))
+
+    def testCreateCardsConsecutively(self):
+        """
+        Tests that consecutive cards of different statuses can be created.
+        """
+        self.assertEqual(models.SUCCESS, self.users.create_card("Apple", "Software Engineer", 0))
+        self.assertEqual(models.SUCCESS, self.users.create_card("Airbnb", "Software Engineer", 1))
+        self.assertEqual(models.SUCCESS, self.users.create_card("Akamai", "Software Engineer", 2))
+
+
+###############################################################################################################
 
     ###############################
     ##                           ##
