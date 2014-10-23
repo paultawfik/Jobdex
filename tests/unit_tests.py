@@ -1,5 +1,5 @@
 """
-Unit tests.
+Unit tests UserApp, CardApp, and DocumentsApp.
 """
 
 import unittest
@@ -492,7 +492,7 @@ class TestTag(unittest.TestCase):
         self.assertEqual(models.SUCCESS, self.tags.create_card("CompanyJ", "Software Engineer", 2))
         card_id = models.Card.objects.get(name='CompanyJ').id
         self.assertEqual(models.SUCCESS, self.tags.add_tag(card_id, "software"))
-        self.assertEqual(models.SUCCESS, self.tags.remove_tag(card_id, "hardware"))
+        self.assertEqual(models.FAILURE, self.tags.remove_tag(card_id, "hardware"))
 
     def testRemoveTag(self):
         """
@@ -502,6 +502,51 @@ class TestTag(unittest.TestCase):
         card_id = models.Card.objects.get(name='CompanyK').id
         self.assertEqual(models.SUCCESS, self.tags.add_tag(card_id, "tech"))
         self.assertEqual(models.SUCCESS, self.tags.remove_tag(card_id, "tech"))
+
+###############################################################################################################
+
+class TestDocuments(unittest.TestCase):
+    """
+    Unit tests for the Documents class (part of DocumentApp)
+    """
+    documents = models.Documents()
+
+    ######################
+    ##                  ##
+    ##  REMOVE DOCUMENT ##
+    ##                  ##
+    ######################
+
+    def testRemoveDocumentNonexistentID(self):
+        """
+        Tests that removing a document that doesn't exist will fail.
+        """
+        self.assertEqual(models.FAILURE, self.documents.remove_document("NONEXISTENT_DOCUMENT_ID"))
+
+    def testRemoveDocumentNonexistentID(self):
+        """
+        Tests that removing a document id that
+        """
+        self.assertEqual(models.FAILURE, self.documents.remove_document("NONEXISTENT_DOCUMENT_ID"))
+
+    ####################
+    ##                ##
+    ##  GET DOCUMENTS ##
+    ##                ##
+    ####################
+
+    def testGetDocumentsNonexistentUser(self):
+        """
+        Tests that getting documents belonging to a non-existent user will fail.
+        """
+        self.assertEqual(models.FAILURE, self.documents.get_documents("NONEXISTENT_USER_ID"))
+
+    def testGetDocumentsLongUsername(self):
+        """
+        Tests that passing in a user_id that exceeds 128 characters will fail.
+        """
+        long_user_id = "thisisasuperlonguserid"*10
+        self.assertEqual(models.FAILURE, self.documents.get_documents(long_user_id))
 
 ###############################################################################################################
 
